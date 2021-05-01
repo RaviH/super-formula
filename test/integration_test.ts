@@ -55,6 +55,33 @@ describe('GraphQL', () => {
             });
     });
 
+    it('when we get user by id, then that user is returned', (done) => {
+        expect(graphqlTypeDefs).to.not.eq(null);
+        request.post('/')
+            .send({
+                query: `{  getUserByUserId(id: "${createdUserId}") { id name dob address description imageUrl createdAt updatedAt }}`
+            })
+            .expect(200)
+            .end((err, res) => {
+                const data = res.body.data;
+                expect(data).to.not.be.null;
+                const user = data.getUserByUserId;
+                expect(user).to.not.be.undefined;
+                expect(user).to.shallowDeepEqual({
+                    name: "hope is a good thing",
+                    dob: "07/08/1999",
+                    address: "USA",
+                    description: "USA user",
+                    imageUrl: "https://google.com"
+                });
+                expect(user.id).to.not.be.null;
+                expect(user.createdAt).to.not.be.null;
+                expect(user.updatedAt).to.not.be.null;
+                createdUserId = user.id;
+                done();
+            });
+    });
+
     it('when there are users then get all users returns all the users', (done) => {
         expect(graphqlTypeDefs).to.not.eq(null);
         request.post('/')
@@ -87,7 +114,7 @@ describe('GraphQL', () => {
         expect(graphqlTypeDefs).to.not.eq(null);
         request.post('/')
             .send({
-                query: `mutation UpdateUser {  updateUser(    id: \"${createdUserId}\"    input: {name: \"Backend test\", dob: \"07/07/1929\"}  ) { id name dob address description imageUrl }}`
+                query: `mutation UpdateUser {  updateUser(    id: "${createdUserId}"    input: {name: "Backend test", dob: "07/07/1929"}  ) { id name dob address description imageUrl }}`
             })
             .expect(200)
             .end((err, res) => {

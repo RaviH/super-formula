@@ -8,6 +8,10 @@ let users: User[] = [];
 export const graphqlResolvers = {
     Query: {
         getAllUsers: () => users,
+        getUserByUserId: (_: any, {id}: any) => {
+            console.log(`ID: ${id}`);
+            return users.find((user) => user.id === id);
+        }
     },
     Mutation: {
         createUser: (_: any, {input}: any) => {

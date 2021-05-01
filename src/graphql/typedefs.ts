@@ -22,6 +22,7 @@ export const graphqlTypeDefs = gql`
 
     type Query {
         getAllUsers: [User]
+        getUserByUserId(id: String!): User
     }
 
     type Mutation {
