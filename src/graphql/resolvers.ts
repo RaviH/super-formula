@@ -3,18 +3,7 @@ import {ApolloError, UserInputError} from 'apollo-server-errors';
 
 const {v4: uuidv4} = require('uuid');
 
-let users: User[] = [
-    {
-        "id": "ac658bae-57c6-4f13-975a-7c3146c64a49",
-        "name": "backend test",
-        "dob": "",
-        "address": "",
-        "description": "",
-        "createdAt": "",
-        "updatedAt": "",
-        "imageUrl": ""
-    }
-];
+let users: User[] = [];
 
 export const graphqlResolvers = {
     Query: {
@@ -45,6 +34,7 @@ export const graphqlResolvers = {
                 if (userIndex >= 0) {
                     const currUser = users[userIndex];
                     users[userIndex] = {
+                        ...currUser,
                         ...input,
                         id: currUser.id,
                         createdAt: currUser.createdAt,
