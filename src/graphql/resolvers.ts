@@ -1,18 +1,18 @@
-const books = [
+const users = [
     {
-        title: 'The Awakening',
-        author: 'Kate Chopin',
-    },
-    {
-        title: 'City of Glass',
-        author: 'Paul Auster',
-    },
+        "id": "ac658bae-57c6-4f13-975a-7c3146c64a49",
+        "name": "backend test",
+        "dob": "",
+        "address": "",
+        "description": "",
+        "createdAt": "",
+        "updatedAt": "",
+        "imageUrl": ""
+    }
 ];
 
-// Resolvers define the technique for fetching the types defined in the
-// schema. This resolver retrieves books from the "books" array above.
 export const graphqlResolvers = {
     Query: {
-        books: () => books,
+        getAllUsers: () => users,
     },
 };
