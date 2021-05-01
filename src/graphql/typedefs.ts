@@ -36,14 +36,13 @@ export const graphqlTypeDefs = gql`
     }
 `;
 
-
 export interface User {
     id: string,
     name: string,
-    dob: string | null | undefined,
-    address: string | null | undefined,
-    description: string | null | undefined,
-    imageUrl: string | null | undefined,
+    dob?: string,
+    address?: string,
+    description?: string,
+    imageUrl?: string,
     createdAt: string | null | undefined,
     updatedAt: string | null | undefined
 }

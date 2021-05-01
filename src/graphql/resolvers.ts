@@ -1,5 +1,6 @@
 import {User} from "./typedefs";
-import {ApolloError, UserInputError} from 'apollo-server-errors';
+import {ApolloError} from 'apollo-server-errors';
+import {createUser, deleteUser, getUserByUserId, getUsers, updateUser} from "../repository/user_respository";
 
 const {v4: uuidv4} = require('uuid');
 
@@ -7,15 +8,19 @@ let users: User[] = [];
 
 export const graphqlResolvers = {
     Query: {
-        getAllUsers: () => users,
-        getUserByUserId: (_: any, {id}: any) => {
-            console.log(`ID: ${id}`);
-            return users.find((user) => user.id === id);
+        getAllUsers: async () => {
+            return await getUsers();
+        },
+        getUserByUserId: async (_: any, {id}: any) => {
+            return await getUserByUserId(id);
         }
     },
     Mutation: {
-        createUser: (_: any, {input}: any) => {
+        createUser: async (_: any, {input}: any) => {
             try {
+                await createUser({
+                    ...input
+                });
                 users.push({
                     id: uuidv4(),
                     ...input,
@@ -32,21 +37,9 @@ export const graphqlResolvers = {
             }
         },
 
-        updateUser: (_: any, {id, input}: any) => {
+        updateUser: async (_: any, {id, input}: any) => {
             try {
-                const userIndex = users.findIndex((user) => user.id === id);
-                if (userIndex >= 0) {
-                    const currUser = users[userIndex];
-                    users[userIndex] = {
-                        ...currUser,
-                        ...input,
-                        id: currUser.id,
-                        createdAt: currUser.createdAt,
-                        updatedAt: new Date().toISOString(),
-                    };
-                    return users[userIndex];
-                }
-                throw new ApolloError(`User: ${id} not found in database`, 'DATA_NOT_FOUND', {});
+                return await updateUser(id, input);
             } catch (e) {
                 throw new ApolloError(
                     `Error updating user by id: ${id}: ${e.message}`,
@@ -56,18 +49,9 @@ export const graphqlResolvers = {
             }
         },
 
-        deleteUser: (_: any, {id}: any) => {
+        deleteUser: async (_: any, {id}: any) => {
             try {
-                const userIndex = users.findIndex((user) => user.id === id);
-                if (userIndex >= 0) {
-                    users = users.filter((users) => users.id !== id);
-                    return {
-                        result: `User with ${id} deleted`
-                    };
-                }
-                return {
-                    result: `User with ${id} not found`
-                };
+                return  await deleteUser(id);
             } catch (e) {
                 throw new ApolloError(
                     `Error deleting user by id: ${id}: ${e.message}`,
