@@ -14,7 +14,9 @@
         "clean": "rimraf build"
     },
     "dependencies": {
-        "dotenv": "^8.2.0"
+        "apollo-server": "^2.24.0",
+        "dotenv": "^8.2.0",
+        "graphql": "^15.5.0"
     },
     "devDependencies": {
         "@types/node": "^15.0.1",
