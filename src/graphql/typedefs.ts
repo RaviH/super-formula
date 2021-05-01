@@ -11,8 +11,20 @@ export const graphqlTypeDefs = gql`
         createdAt: String
         updatedAt: String
     }
+    
+    input UserCreateInput {
+        name: String!
+        dob: String
+        address: String
+        description: String
+        imageUrl: String
+    }
 
     type Query {
         getAllUsers: [User]
+    }
+
+    type Mutation {
+        createUser(input: UserCreateInput): User
     }
 `;
