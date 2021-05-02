@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server');
+const { gql } = require('apollo-server-lambda');
 
 export const graphqlTypeDefs = gql`
     type User {
