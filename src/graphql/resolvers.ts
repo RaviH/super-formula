@@ -18,16 +18,9 @@ export const graphqlResolvers = {
     Mutation: {
         createUser: async (_: any, {input}: any) => {
             try {
-                await createUser({
+                return await createUser({
                     ...input
                 });
-                users.push({
-                    id: uuidv4(),
-                    ...input,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                })
-                return users[users.length - 1];
             } catch (e) {
                 throw new ApolloError(
                     `Error creating user: ${e.message}`,

@@ -1,3 +1,5 @@
+process.env.TEST_MODE = 'true';
+
 import {expect} from 'chai';
 const chai = require('chai');
 chai.use(require('chai-shallow-deep-equal'));
@@ -5,10 +7,16 @@ chai.use(require('chai-shallow-deep-equal'));
 const url = `http://localhost:4000/`;
 const request = require('supertest')(url);
 const {graphqlTypeDefs} = require('../src/graphql/typedefs');
+import {deleteUserTable, createUserTable}  from '../src/repository/user_respository';
 
 let createdUserId = '';
 
 describe('GraphQL', () => {
+    before(async () => {
+        await deleteUserTable();
+        await createUserTable();
+    });
+
     it('when there are users then get all users returns empty users', (done) => {
         expect(graphqlTypeDefs).to.not.eq(null);
         request.post('/')
@@ -64,9 +72,9 @@ describe('GraphQL', () => {
             .expect(200)
             .end((err, res) => {
                 const data = res.body.data;
-                expect(data).to.not.be.null;
+                expect(data).to.be.ok;
                 const user = data.getUserByUserId;
-                expect(user).to.not.be.undefined;
+                expect(user).to.be.ok;
                 expect(user).to.shallowDeepEqual({
                     name: "hope is a good thing",
                     dob: "07/08/1999",
@@ -114,7 +122,7 @@ describe('GraphQL', () => {
         expect(graphqlTypeDefs).to.not.eq(null);
         request.post('/')
             .send({
-                query: `mutation UpdateUser {  updateUser(    id: "${createdUserId}"    input: {name: "Backend test", dob: "07/07/1929"}  ) { id name dob address description imageUrl }}`
+                query: `mutation UpdateUser {  updateUser(    id: "${createdUserId}"    input: {name: "Backend test", dob: "07/07/2020", address: "India", description: "India user", imageUrl: "https://google.in"}  ) { id name dob address description imageUrl }}`
             })
             .expect(200)
             .end((err, res) => {
@@ -125,33 +133,35 @@ describe('GraphQL', () => {
                 expect(user).to.deep.include({
                     id: createdUserId,
                     name: "Backend test",
-                    dob: "07/07/1929",
-                    address: "USA",
-                    description: "USA user",
-                    imageUrl: "https://google.com"
+                    dob: "07/07/2020",
+                    address: "India",
+                    description: "India user",
+                    imageUrl: "https://google.in"
                 })
                 expect(user.id).to.not.be.null;
                 done();
             });
     })
 
-    it('when deleting a NON existing user, then that user is returned', () => {
+    it('when deleting a NON existing user, then that user is returned', (done) => {
         expect(graphqlTypeDefs).to.not.eq(null);
+        const nonExistingId = `${createdUserId}-99`
         request.post('/')
             .send({
-                query: `mutation DeleteUser { deleteUser(id: "${createdUserId}-99") { result }}`
+                query: `mutation DeleteUser { deleteUser(id: "${nonExistingId}") { result }}`
             })
             .expect(200)
             .end((err, res) => {
                 const data = res.body.data;
                 expect(data).to.not.be.null;
-                expect(data.deleteUser).to.deep.eq({
-                    result: "c68b63ae-60c7-4864-ac09-985640b8b6771 not found"
-                })
+                expect(data.deleteUser).to.deep.equal({
+                    result: `User with id: ${nonExistingId} not found`
+                });
+                done();
             });
     });
 
-    it('when deleting an existing user, then that user is returned', () => {
+    it('when deleting an existing user, then that user is returned', (done) => {
         expect(graphqlTypeDefs).to.not.eq(null);
         request.post('/')
             .send({
@@ -162,8 +172,9 @@ describe('GraphQL', () => {
                 const data = res.body.data;
                 expect(data).to.not.be.null;
                 expect(data.deleteUser).to.deep.eq({
-                    result: "c68b63ae-60c7-4864-ac09-985640b8b6771 not found"
-                })
+                    result: `Successfully deleted user: ${createdUserId}`
+                });
+                done();
             });
     });
 });

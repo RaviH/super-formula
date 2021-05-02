@@ -1,15 +1,31 @@
-import {DeleteItemCommand, PutItemCommand, ScanCommand, UpdateItemCommand} from "@aws-sdk/client-dynamodb";
+import {
+    CreateTableCommand,
+    DeleteItemCommand, DeleteTableCommand,
+    PutItemCommand,
+    ScanCommand,
+    UpdateItemCommand
+} from "@aws-sdk/client-dynamodb";
 import {User} from "../graphql/typedefs";
 
 const {DynamoDBClient, GetItemCommand} = require("@aws-sdk/client-dynamodb");
 const {v4: uuidv4} = require('uuid');
 
 // Create DynamoDB service object
-const dbClient = new DynamoDBClient({region: "us-west-2"});
+const defaultConfig = {
+    region: "us-west-2"
+};
+
+if (process.env.TEST_MODE) {
+    defaultConfig.region = 'local';
+    // @ts-ignore
+    defaultConfig.endpoint = 'http://localhost:8000';
+}
+
+const dbClient = new DynamoDBClient(defaultConfig);
 const USERS_TABLE = "usersTable";
 
 export const getUserByUserId = async (
-    userId: string = '534e653b-865e-47b4-bfde-1be69cf80abb'
+    userId: string
 ) => {
     const params = {
         TableName: USERS_TABLE,
@@ -96,7 +112,7 @@ export const createUser = async (user: User) => {
 export const updateUser = async (id: string, user: User) => {
     const params = {
         ExpressionAttributeNames: {
-            "#name": "name",
+            "#userName": "userName",
             "#dob": "dob",
             "#address": "address",
             "#description": "description",
@@ -104,7 +120,7 @@ export const updateUser = async (id: string, user: User) => {
             "#updatedAt": "updatedAt",
         },
         ExpressionAttributeValues: {
-            ":name": {
+            ":userName": {
                 S: user.name
             },
             ":dob": {
@@ -131,7 +147,7 @@ export const updateUser = async (id: string, user: User) => {
         ReturnValues: "ALL_NEW",
         TableName: USERS_TABLE,
         UpdateExpression: `SET 
-            #name = :name, 
+            #userName = :userName, 
             #dob = :dob, 
             #address = :address,
             #description = :description,
@@ -159,4 +175,38 @@ export const deleteUser = async (id: string) => {
     return deleteItemCommandOutput.Attributes
         ? { result: `Successfully deleted user: ${id}`}
         : { result: `User with id: ${id} not found`};
+};
+
+export const createUserTable = async () => {
+    const params = {
+        AttributeDefinitions: [{
+            AttributeName: "id", //ATTRIBUTE_NAME_1
+            AttributeType: "S", //ATTRIBUTE_TYPE
+        }],
+        KeySchema: [
+            {
+                AttributeName: "id", //ATTRIBUTE_NAME_1
+                KeyType: "HASH",
+            }
+        ],
+        ProvisionedThroughput: {
+            ReadCapacityUnits: 1,
+            WriteCapacityUnits: 1,
+        },
+        TableName: USERS_TABLE,
+        StreamSpecification: {
+            StreamEnabled: false,
+        },
+    };
+
+
+    await dbClient.send(new CreateTableCommand(params));
+};
+
+export const deleteUserTable = async () => {
+    const params = {
+        TableName: USERS_TABLE
+    };
+
+    await dbClient.send(new DeleteTableCommand(params));
 };
