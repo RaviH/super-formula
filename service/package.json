@@ -4,7 +4,7 @@
     "description": "",
     "license": "UNLICENSED",
     "repository": "",
-    "main": "src/graphql.ts",
+    "main": "src/index.ts",
     "scripts": {
         "start": "node build/main.js",
         "dev": "ts-node --files src/apollo_server.ts",

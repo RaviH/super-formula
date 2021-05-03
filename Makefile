@@ -18,3 +18,9 @@ get_url:
 
 build: s3
 	sam build
+
+test:
+	cd service; yarn test;
+
+integration_test:
+	cd service; yarn integrationtest;
