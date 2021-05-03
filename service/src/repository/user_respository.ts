@@ -208,5 +208,9 @@ export const deleteUserTable = async () => {
         TableName: USERS_TABLE
     };
 
-    await dbClient.send(new DeleteTableCommand(params));
+    try {
+        await dbClient.send(new DeleteTableCommand(params));
+    } catch (e) {
+        console.warn('Could not delete user table, probably does not exist yet.');
+    }
 };

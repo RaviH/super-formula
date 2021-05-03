@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server-lambda');
+const { ApolloServer } = require('apollo-server-lambda');
 const { graphqlTypeDefs} = require('./graphql/typedefs');
 const { graphqlResolvers } = require('./graphql/resolvers');
 
@@ -6,8 +6,4 @@ const { graphqlResolvers } = require('./graphql/resolvers');
 // definition and your set of resolvers.
 export const server = new ApolloServer({ typeDefs: graphqlTypeDefs, resolvers: graphqlResolvers });
 
-// The `listen` method launches a web server.
-// @ts-ignore
-// server.listen().then(({ url }) => {
-//     console.log(`🚀  Server ready at ${url}`);
-// });
+exports.handler = server.createHandler();

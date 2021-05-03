@@ -1,5 +1,6 @@
 process.env.TEST_MODE = 'true';
 
+import {server} from "./local/local_apollo_server";
 import {expect} from 'chai';
 const chai = require('chai');
 chai.use(require('chai-shallow-deep-equal'));
@@ -15,6 +16,9 @@ describe('GraphQL', () => {
     before(async () => {
         await deleteUserTable();
         await createUserTable();
+        server.listen().then(({ url }) => {
+            console.log(`🚀  Server ready at ${url}`);
+        });
     });
 
     it('when there are users then get all users returns empty users', (done) => {

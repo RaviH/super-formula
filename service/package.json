@@ -4,10 +4,10 @@
     "description": "",
     "license": "UNLICENSED",
     "repository": "",
-    "main": "src/graphql.js",
+    "main": "src/graphql.ts",
     "scripts": {
         "start": "node build/main.js",
-        "dev": "ts-node --files ./src/main.ts",
+        "dev": "ts-node --files src/apollo_server.ts",
         "build": "tsc",
         "watch": "TEST_MODE=true nodemon",
         "prebuild": "rimraf build",
@@ -25,6 +25,7 @@
         "uuid": "^8.3.2"
     },
     "devDependencies": {
+        "apollo-server": "^2.24.0",
         "@types/jest": "^26.0.23",
         "@types/mocha": "^8.2.2",
         "@types/node": "^15.0.1",
