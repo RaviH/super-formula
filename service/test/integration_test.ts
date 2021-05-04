@@ -9,7 +9,24 @@ const {graphqlTypeDefs} = require('../src/graphql/typedefs');
 
 let createdUserId = '';
 
-describe('integration tests against local sam but real db :)', () => {
+describe('integration tests against local sam but real db', () => {
+
+    it('get geo code with existing address', function (done) {
+        this.timeout(15000);
+        request.post('/')
+            .send({
+                query: `{  getGeoCode(address: "Portland, OR") { coordinates }}`
+            })
+            .expect(200)
+            .end((err, res) => {
+                const data = res.body.data;
+                expect(data).to.be.ok;
+                const geoCode = data.getGeoCode;
+                expect(geoCode).to.be.ok;
+                expect(geoCode.coordinates).to.deep.eql(["-122.6742", "45.5202"]);
+                done();
+            });
+    });
 
     it('when there are users then get all users returns empty users', function (done) {
         this.timeout(15000);

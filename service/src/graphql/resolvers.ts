@@ -1,6 +1,7 @@
 import {User} from "./typedefs";
 import {ApolloError} from 'apollo-server-errors';
 import {createUser, deleteUser, getUserByUserId, getUsers, updateUser} from "../repository/user_respository";
+import {getCoordinatesForAddress} from "../service/geocode_service";
 
 const {v4: uuidv4} = require('uuid');
 
@@ -13,7 +14,11 @@ export const graphqlResolvers = {
         },
         getUserByUserId: async (_: any, {id}: any) => {
             return await getUserByUserId(id);
-        }
+        },
+        getGeoCode: async (_: any, {address}: any) => {
+            console.log(`Address: ${JSON.stringify(address, null, 2)}`);
+            return await getCoordinatesForAddress(address)
+        },
     },
     Mutation: {
         createUser: async (_: any, {input}: any) => {

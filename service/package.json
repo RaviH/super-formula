@@ -13,7 +13,7 @@
         "prebuild": "rimraf build",
         "clean": "rimraf build",
         "start:db": "java -Djava.library.path=./test/dynamodb_local_latest/DynamoDBLocal_lib -jar ./test/dynamodb_local_latest/DynamoDBLocal.jar -sharedDb",
-        "pretest": "pm2 start yarn --interpreter bash --name api -- watch && pm2 start yarn --interpreter bash --name api -- start:db",
+        "pretest": "pm2 start yarn --interpreter bash --name api -- watch && pm2 start yarn --interpreter bash --name api -- start:db && sleep 2",
         "test": "TS_NODE_PROJECT=\"test/tsconfig.testing.json\" mocha -r ts-node/register test/**/*functional*test.ts",
         "start:sam": "sam local start-api --template-file ../template.yaml --warm-containers EAGER",
         "posttest": "pm2 delete api",
@@ -22,6 +22,7 @@
         "postintegrationtest": "pm2 delete IT"
     },
     "dependencies": {
+        "axios": "^0.21.1",
         "@aws-sdk/client-dynamodb": "^3.14.0",
         "apollo-server-lambda": "^2.24.0",
         "dotenv": "^8.2.0",

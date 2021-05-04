@@ -55,7 +55,6 @@ export const getUsers = async () => {
         ProjectionExpression: "id, userName, dob, address, description, imageUrl, createdAt, updatedAt",
     };
 
-
     const data = await dbClient.send(new ScanCommand(params));
     return data.Items.map((item) => ({
         id: item.id.S,

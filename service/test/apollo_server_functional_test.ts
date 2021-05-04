@@ -1,6 +1,6 @@
 process.env.TEST_MODE = 'true';
 
-import {server} from "./local/local_apollo_server";
+import {start, stop} from "./local/local_apollo_server";
 import {expect} from 'chai';
 const chai = require('chai');
 chai.use(require('chai-shallow-deep-equal'));
@@ -16,10 +16,12 @@ describe('GraphQL', () => {
     before(async () => {
         await deleteUserTable();
         await createUserTable();
-        server.listen().then(({ url }) => {
-            console.log(`🚀  Server ready at ${url}`);
-        });
+        start();
     });
+
+    after( () => {
+        stop();
+    })
 
     it('when there are users then get all users returns empty users', (done) => {
         expect(graphqlTypeDefs).to.not.eq(null);
@@ -90,6 +92,22 @@ describe('GraphQL', () => {
                 expect(user.createdAt).to.not.be.null;
                 expect(user.updatedAt).to.not.be.null;
                 createdUserId = user.id;
+                done();
+            });
+    });
+
+    it('get geo code with existing address', (done) => {
+        request.post('/')
+            .send({
+                query: `{  getGeoCode(address: "Portland, OR") { coordinates }}`
+            })
+            .expect(200)
+            .end((err, res) => {
+                const data = res.body.data;
+                expect(data).to.be.ok;
+                const geoCode = data.getGeoCode;
+                expect(geoCode).to.be.ok;
+                expect(geoCode.coordinates).to.deep.eql(["-122.6742", "45.5202"]);
                 done();
             });
     });

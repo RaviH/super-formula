@@ -19,8 +19,13 @@ export const graphqlTypeDefs = gql`
         description: String
         imageUrl: String
     }
+    
+    type Coordinates {
+        coordinates: [String]
+    }
 
     type Query {
+        getGeoCode(address: String!): Coordinates
         getAllUsers: [User]
         getUserByUserId(id: String!): User
     }

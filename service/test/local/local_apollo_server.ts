@@ -6,7 +6,21 @@ const { graphqlResolvers } = require('../../src/graphql/resolvers');
 // definition and your set of resolvers.
 export const server = new ApolloServer({ typeDefs: graphqlTypeDefs, resolvers: graphqlResolvers });
 
+/**
+ * Starts the local apollo server before tests.
+ */
+export const start = () => {
 // The `listen` method launches a web server.
-server.listen().then(({ url }) => {
-    console.log(`🚀  Server ready at ${url}`);
-});
+    server.listen().then(({ url }) => {
+        console.log(`🚀  Server ready at ${url}`);
+    });
+}
+
+/**
+ * Stops the local apollo server after tests.
+ */
+export const stop = () => {
+    server.stop().then(() => {
+        console.log('Server stopped!');
+    })
+}
