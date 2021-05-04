@@ -5,7 +5,7 @@ import {
     ScanCommand,
     UpdateItemCommand
 } from "@aws-sdk/client-dynamodb";
-import {User} from "../graphql/typedefs";
+import {User} from "../graphql/schema";
 
 import {DynamoDBClient, GetItemCommand} from "@aws-sdk/client-dynamodb";
 import { uuid } from 'uuidv4';

@@ -7,7 +7,7 @@ chai.use(require('chai-shallow-deep-equal'));
 
 const url = `http://localhost:4000/`;
 const request = require('supertest')(url);
-const {graphqlTypeDefs} = require('../src/graphql/typedefs');
+const {graphqlTypeDefs} = require('../src/graphql/schema');
 import {deleteLocalUserTable, createLocalUserTable}  from '../src/repository/user_respository';
 
 let createdUserId = '';

@@ -1,4 +1,4 @@
-import {User} from "./typedefs";
+import {User} from "./schema";
 import {ApolloError} from 'apollo-server-errors';
 import {createUser, deleteUser, getUserByUserId, getUsers, updateUser} from "../repository/user_respository";
 import {getCoordinatesForAddress, GetCoordinatesResponse} from "../service/geocode_service";
