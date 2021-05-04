@@ -26,12 +26,12 @@ Design/Architectural decisions:
 
 How to build / deploy:
 ---
-NOTE: needs make installed on the machine.
+NOTE: `make` needs to be installed on the machine.
 
-`build`: `make build`
-`deploy`: `make deploy`
-`unit/functional test`: `make test`
-`integration test`: `make integration_test`
+* `build`: `make build`
+* `deploy`: `make deploy`
+* `unit/functional test`: `make test`
+* `integration test`: `make integration_test`
 
 Architecture:
 ---
@@ -41,5 +41,5 @@ Architecture:
 Next steps:
 ---
 
-a. Add implementation for pagination of users.
-b. Fix functional and integration test for timing issues.
+*  Add implementation for pagination of users.
+* Fix functional and integration test for timing issues.
