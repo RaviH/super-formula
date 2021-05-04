@@ -32,3 +32,8 @@ NOTE: needs make installed on the machine.
 `deploy`: `make deploy`
 `unit/functional test`: `make test`
 `integration test`: `make integration_test`
+
+Architecture:
+---
+
+![alt text](Architecture.png "Architecture")
