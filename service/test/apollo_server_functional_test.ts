@@ -8,14 +8,14 @@ chai.use(require('chai-shallow-deep-equal'));
 const url = `http://localhost:4000/`;
 const request = require('supertest')(url);
 const {graphqlTypeDefs} = require('../src/graphql/typedefs');
-import {deleteUserTable, createUserTable}  from '../src/repository/user_respository';
+import {deleteLocalUserTable, createLocalUserTable}  from '../src/repository/user_respository';
 
 let createdUserId = '';
 
-describe('GraphQL', () => {
+describe('functional test', () => {
     before(async () => {
-        await deleteUserTable();
-        await createUserTable();
+        await deleteLocalUserTable();
+        await createLocalUserTable();
         start();
     });
 

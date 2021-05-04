@@ -1,27 +1,25 @@
 import {User} from "./typedefs";
 import {ApolloError} from 'apollo-server-errors';
 import {createUser, deleteUser, getUserByUserId, getUsers, updateUser} from "../repository/user_respository";
-import {getCoordinatesForAddress} from "../service/geocode_service";
-
-const {v4: uuidv4} = require('uuid');
-
-let users: User[] = [];
+import {getCoordinatesForAddress, GetCoordinatesResponse} from "../service/geocode_service";
 
 export const graphqlResolvers = {
     Query: {
-        getAllUsers: async () => {
+        getAllUsers: async () : Promise<User[]> => {
             return await getUsers();
         },
-        getUserByUserId: async (_: any, {id}: any) => {
+        getUserByUserId: async (_: any, {id}: {id: string}) : Promise<User> => {
             return await getUserByUserId(id);
         },
-        getGeoCode: async (_: any, {address}: any) => {
-            console.log(`Address: ${JSON.stringify(address, null, 2)}`);
+        getGeoCode: async (
+            _: never,
+            {address}: {address: string}
+        ): Promise<GetCoordinatesResponse> => {
             return await getCoordinatesForAddress(address)
         },
     },
     Mutation: {
-        createUser: async (_: any, {input}: any) => {
+        createUser: async (_: any, {input}: {input: User}) : Promise<User> => {
             try {
                 return await createUser({
                     ...input
@@ -35,7 +33,7 @@ export const graphqlResolvers = {
             }
         },
 
-        updateUser: async (_: any, {id, input}: any) => {
+        updateUser: async (_: any, {id, input}: {id: string, input: User}) : Promise<User> => {
             try {
                 return await updateUser(id, input);
             } catch (e) {
@@ -47,7 +45,7 @@ export const graphqlResolvers = {
             }
         },
 
-        deleteUser: async (_: any, {id}: any) => {
+        deleteUser: async (_: any, {id}: {id: string}) : Promise<{result: string}> => {
             try {
                 return  await deleteUser(id);
             } catch (e) {

@@ -7,26 +7,33 @@ import {
 } from "@aws-sdk/client-dynamodb";
 import {User} from "../graphql/typedefs";
 
-const {DynamoDBClient, GetItemCommand} = require("@aws-sdk/client-dynamodb");
-const {v4: uuidv4} = require('uuid');
+import {DynamoDBClient, GetItemCommand} from "@aws-sdk/client-dynamodb";
+import { uuid } from 'uuidv4';
 
 // Create DynamoDB service object
-const defaultConfig = {
+const defaultConfig : {
+    region: string,
+    endpoint?: string,
+} = {
     region: "us-west-2"
 };
 
 if (process.env.TEST_MODE) {
     defaultConfig.region = 'local';
-    // @ts-ignore
     defaultConfig.endpoint = 'http://localhost:8000';
 }
 
 const dbClient = new DynamoDBClient(defaultConfig);
 const USERS_TABLE = "usersTable";
 
+/**
+ * Gets user by user id.
+ *
+ * @param {string} userId user id
+ */
 export const getUserByUserId = async (
     userId: string
-) => {
+) : Promise<User> => {
     const params = {
         TableName: USERS_TABLE,
         Key: {
@@ -34,7 +41,6 @@ export const getUserByUserId = async (
         },
         ProjectionExpression: "id, userName, dob, address, description, imageUrl, createdAt, updatedAt",
     };
-
 
     const data = await dbClient.send(new GetItemCommand(params));
     return {
@@ -49,7 +55,13 @@ export const getUserByUserId = async (
     }
 };
 
-export const getUsers = async () => {
+/**
+ * Returns all the users.
+ *
+ * @returns {User[]} all the users.
+ */
+//TODO: Implement pagination.
+export const getUsers = async () : Promise<User[]> => {
     const params = {
         TableName: USERS_TABLE,
         ProjectionExpression: "id, userName, dob, address, description, imageUrl, createdAt, updatedAt",
@@ -68,9 +80,15 @@ export const getUsers = async () => {
     }));
 };
 
-export const createUser = async (user: User) => {
+/**
+ * Creates user based on user input
+ *
+ * @param {User} user user input
+ * @returns {User} newly created user.
+ */
+export const createUser = async (user: User) : Promise<User> => {
     const currDate = new Date().toISOString();
-    user.id = uuidv4();
+    user.id = uuid();
     user.createdAt = currDate;
     user.updatedAt = currDate;
     const params = {
@@ -108,7 +126,15 @@ export const createUser = async (user: User) => {
     return getUserByUserId(user.id);
 };
 
-export const updateUser = async (id: string, user: User) => {
+/**
+ * Updates user.
+ *
+ * @param {string} id user id
+ * @param {User} user user properties to be updaed
+ *
+ * @returns updated user.
+ */
+export const updateUser = async (id: string, user: User) : Promise<User> => {
     const params = {
         ExpressionAttributeNames: {
             "#userName": "userName",
@@ -159,7 +185,14 @@ export const updateUser = async (id: string, user: User) => {
     return getUserByUserId(id);
 };
 
-export const deleteUser = async (id: string) => {
+/**
+ * Deletes user by id
+ *
+ * @param {string} id user id
+ *
+ * @returns result of delete operation.
+ */
+export const deleteUser = async (id: string) : Promise<{result: string}> => {
     const params = {
         Key: {
             "id": {
@@ -176,7 +209,11 @@ export const deleteUser = async (id: string) => {
         : { result: `User with id: ${id} not found`};
 };
 
-export const createUserTable = async () => {
+/**
+ * ONLY used in test.
+ * Creates user table.
+ */
+export const createLocalUserTable = async (): Promise<void> => {
     const params = {
         AttributeDefinitions: [{
             AttributeName: "id", //ATTRIBUTE_NAME_1
@@ -198,11 +235,14 @@ export const createUserTable = async () => {
         },
     };
 
-
     await dbClient.send(new CreateTableCommand(params));
 };
 
-export const deleteUserTable = async () => {
+/**
+ * ONLY used in test.
+ * Deletes user table.
+ */
+export const deleteLocalUserTable = async () : Promise<void> => {
     const params = {
         TableName: USERS_TABLE
     };

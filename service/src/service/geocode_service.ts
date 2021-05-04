@@ -18,7 +18,9 @@ export interface GetCoordinatesResponse {
  * @param {string} address
  * @returns {GetCoordinatesResponse} coordinates for the given address.
  */
-export const getCoordinatesForAddress = async (address: string) => {
+export const getCoordinatesForAddress = async (
+    address: string
+) : Promise<GetCoordinatesResponse> => {
     try {
         const axiosResponse = await axios.get(getUrl(address));
         const result = axiosResponse.data;

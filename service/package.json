@@ -12,6 +12,7 @@
         "watch": "TEST_MODE=true nodemon",
         "prebuild": "rimraf build",
         "clean": "rimraf build",
+        "lint": "eslint src --ext .ts,*.js --fix",
         "start:db": "java -Djava.library.path=./test/dynamodb_local_latest/DynamoDBLocal_lib -jar ./test/dynamodb_local_latest/DynamoDBLocal.jar -sharedDb",
         "pretest": "pm2 start yarn --interpreter bash --name api -- watch && pm2 start yarn --interpreter bash --name api -- start:db && sleep 2",
         "test": "TS_NODE_PROJECT=\"test/tsconfig.testing.json\" mocha -r ts-node/register test/**/*functional*test.ts",
@@ -22,21 +23,26 @@
         "postintegrationtest": "pm2 delete IT"
     },
     "dependencies": {
-        "axios": "^0.21.1",
         "@aws-sdk/client-dynamodb": "^3.14.0",
         "apollo-server-lambda": "^2.24.0",
+        "axios": "^0.21.1",
         "dotenv": "^8.2.0",
         "graphql": "^15.5.0",
-        "uuid": "^8.3.2"
+        "uuidv4": "^6.2.7"
     },
     "devDependencies": {
-        "apollo-server": "^2.24.0",
         "@types/jest": "^26.0.23",
         "@types/mocha": "^8.2.2",
         "@types/node": "^15.0.1",
+        "@typescript-eslint/eslint-plugin": "^4.22.1",
+        "@typescript-eslint/parser": "^4.22.1",
+        "apollo-server": "^2.24.0",
         "chai": "^4.3.4",
         "chai-shallow-deep-equal": "^1.4.6",
         "easygraphql-tester": "^6.0.1",
+        "eslint": "^7.25.0",
+        "eslint-config-airbnb-base": "^14.2.1",
+        "eslint-plugin-import": "^2.22.1",
         "mocha": "^8.3.2",
         "nodemon": "^2.0.7",
         "nyc": "^15.1.0",
