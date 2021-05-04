@@ -1,8 +1,8 @@
 super-formula-interview
 ------
 
-1. Run functional tests: `yarn test`
-2. Run integration tests: `yarn integrationtest`
+1. Run functional tests: `yarn test`               // might need to run couple times due to cold start timing issues.
+2. Run integration tests: `yarn integrationtest`   // might need to run couple times due to cold start timing issues.
 
 Design/Architectural decisions:
 ----
@@ -37,3 +37,9 @@ Architecture:
 ---
 
 ![alt text](Architecture.png "Architecture")
+
+Next steps:
+---
+
+a. Add implementation for pagination of users.
+b. Fix functional and integration test for timing issues.
