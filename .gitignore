@@ -2,3 +2,6 @@ node_modules/
 build/
 coverage/
 .idea
+yarn-error.log
+shared-local-instance.db
+.aws-sam/
